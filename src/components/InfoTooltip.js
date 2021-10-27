@@ -5,15 +5,13 @@ import { ReactComponent as Fail } from '../images/icons/fail.svg';
 
 function InfoTooltip(props) {
     const { isOpen, onClose, status } = props;
-    console.log(status)
     const overlayRef = useRef(null);
 
     function onOverlayClick(event) {
-        console.log('da')
         if (event.target === overlayRef.current) {
             onClose()
-        }
-    }
+        };
+    };
 
     return (
         <div className={`popup popup-info ${isOpen && 'popup_is-opened'}`} ref={overlayRef} onClick={onOverlayClick}>

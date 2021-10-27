@@ -30,7 +30,22 @@ function App() {
   const [cardToDelete, setCardToDelete] = useState(null);
   const [loggedIn, setLoggedIn] = useState(false);
   const [status, setStatus] = useState(false);
+
   const history = useHistory();
+
+  function checkTokenValidity(token) {
+    auth.checkToken(token)
+      .then((data) => {
+        console.log(data)
+        setLoggedIn(true);
+        console.log(loggedIn)
+      })
+      .catch(error => {
+        console.log(`Произошла ошибка: ${error}`);
+        setStatus(false);
+        setIsInfoToolTipOpen(true);
+      });
+  }
 
   function handleRegister(userData) {
     auth.register(userData)
@@ -43,7 +58,21 @@ function App() {
         setStatus(false);
         setIsInfoToolTipOpen(true);
       });
-  }
+  };
+
+  function handleLogin(userData) {
+    auth.login(userData)
+      .then((userData) => {
+        console.log(userData)
+        localStorage.setItem('jwt', userData.token);
+        checkTokenValidity(userData.token);
+      })
+      .catch(error => {
+        console.log(`Произошла ошибка: ${error}`);
+        setStatus(false);
+        setIsInfoToolTipOpen(true);
+      });
+  };
 
   useEffect(() => {
     api.getUserInfo()
@@ -168,7 +197,9 @@ function App() {
             onCardDelete={handleCardTrashClick}
           />
           <Route path="/sign-in">
-            <Login />
+            <Login
+              onLogin={handleLogin}
+            />
           </Route>
           <Route path="/sign-up">
             <Register
@@ -219,4 +250,4 @@ function App() {
   );
 }
 
-export default App;
+export default withRouter(App);
