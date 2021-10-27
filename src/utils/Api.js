@@ -1,5 +1,5 @@
 
-import { apiOptions } from "./constants";
+import { apiOptions as options } from "./constants";
 
 class Api {
     constructor(options) {
@@ -83,6 +83,6 @@ class Api {
     }
 }
 
-const api = new Api(apiOptions);
+const api = new Api(options);
 
 export default api;

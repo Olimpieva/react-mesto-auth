@@ -7,6 +7,10 @@ export const apiOptions = {
     }
 }
 
+export const apiAuthOptions = {
+    baseUrl: 'https://auth.nomoreparties.co',
+}
+
 export const formConfig = {
     inputSelector: '.popup__input',
     submitButtonSelector: '.popup__button',
