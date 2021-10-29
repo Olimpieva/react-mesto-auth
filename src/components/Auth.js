@@ -2,21 +2,15 @@
 import React, { useState } from "react";
 
 function Auth(props) {
-
     const { name, title, buttonText, onSubmit } = props;
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
 
     const handleInputChange = (event) => {
-        console.log(event.target.value)
         event.target.name === 'email' ? setEmail(event.target.value) : setPassword(event.target.value);
     }
 
     const handleSubmit = (event) => {
-        console.log({
-            email,
-            password
-        })
         event.preventDefault();
         onSubmit({
             email,

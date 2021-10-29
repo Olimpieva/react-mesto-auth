@@ -1,6 +1,6 @@
 // import logo from '../logo.svg';
 import React, { useState, useEffect } from 'react';
-import { Route, Switch, useHistory, withRouter } from 'react-router-dom';
+import { Route, Switch, withRouter, useHistory, useLocation } from 'react-router-dom';
 
 import api from '../utils/Api';
 import auth from '../utils/ApiAuth';
@@ -29,16 +29,18 @@ function App() {
   const [selectedCard, setSelectedCard] = useState(null);
   const [cardToDelete, setCardToDelete] = useState(null);
   const [loggedIn, setLoggedIn] = useState(false);
+  const [email, setEmail] = React.useState('');
   const [status, setStatus] = useState(false);
 
   const history = useHistory();
+  const location = useLocation();
 
   function checkTokenValidity(token) {
     auth.checkToken(token)
-      .then((data) => {
-        console.log(data)
+      .then((tokenData) => {
         setLoggedIn(true);
-        console.log(loggedIn)
+        setEmail(tokenData.data.email)
+        history.push('/');
       })
       .catch(error => {
         console.log(`Произошла ошибка: ${error}`);
@@ -46,6 +48,13 @@ function App() {
         setIsInfoToolTipOpen(true);
       });
   }
+
+  React.useEffect(() => {
+    const jwt = localStorage.getItem('jwt');
+    if (jwt) {
+      checkTokenValidity(jwt);
+    }
+  }, []);
 
   function handleRegister(userData) {
     auth.register(userData)
@@ -63,7 +72,7 @@ function App() {
   function handleLogin(userData) {
     auth.login(userData)
       .then((userData) => {
-        console.log(userData)
+        console.log({ userData })
         localStorage.setItem('jwt', userData.token);
         checkTokenValidity(userData.token);
       })
@@ -73,6 +82,11 @@ function App() {
         setIsInfoToolTipOpen(true);
       });
   };
+
+  function handleLogout() {
+    localStorage.removeItem('jwt');
+    setLoggedIn(false);
+  }
 
   useEffect(() => {
     api.getUserInfo()
@@ -183,7 +197,7 @@ function App() {
   return (
     <CurrentUserContext.Provider value={currentUser}>
       <div className="page">
-        <Header />
+        <Header location={location.pathname} email={email} onLogout={handleLogout} />
         <Switch>
           <ProtectedRoute exact path="/"
             component={Main}
