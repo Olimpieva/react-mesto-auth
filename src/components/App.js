@@ -60,19 +60,17 @@ function App() {
     auth.register(userData)
       .then((userData) => {
         setStatus(true);
-        setIsInfoToolTipOpen(true);
       })
       .catch(error => {
         console.log(`Произошла ошибка: ${error}`);
         setStatus(false);
-        setIsInfoToolTipOpen(true);
-      });
+      })
+      .finally(() => setIsInfoToolTipOpen(true))
   };
 
   function handleLogin(userData) {
     auth.login(userData)
       .then((userData) => {
-        console.log({ userData })
         localStorage.setItem('jwt', userData.token);
         checkTokenValidity(userData.token);
       })
@@ -197,7 +195,10 @@ function App() {
   return (
     <CurrentUserContext.Provider value={currentUser}>
       <div className="page">
-        <Header location={location.pathname} email={email} onLogout={handleLogout} />
+        <Header
+          location={location.pathname}
+          email={email}
+          onLogout={handleLogout} />
         <Switch>
           <ProtectedRoute exact path="/"
             component={Main}
